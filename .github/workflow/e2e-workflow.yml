@@ -1,0 +1,19 @@
+name: ci-e2e-testing
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          browser: chrome
