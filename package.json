@@ -1,0 +1,28 @@
+{
+  "name": "bugbanktest",
+  "version": "1.0.0",
+  "description": "automation to test site bugbank",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": false,
+    "stepDefinitions": [
+      "cypress/e2e/steps/**/*.ts"
+    ]
+  },
+  "dependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "latest",
+    "@cypress/webpack-preprocessor": "latest",
+    "cypress": "latest",
+    "ts-loader": "latest",
+    "typescript": "latest",
+    "webpack": "latest"
+  }
+}
