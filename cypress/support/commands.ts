@@ -29,7 +29,7 @@ import { LoginPage } from "./pages/login.page"
 
 
 Cypress.Commands.add('loginPage', ()=>{
-    return cy.wrap(new LoginPage())
+    return new LoginPage()
 })
 
 Cypress.Commands.add('homePage', ()=>{
