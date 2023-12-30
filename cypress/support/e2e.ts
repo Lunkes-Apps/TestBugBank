@@ -29,9 +29,7 @@ before(()=>{
 declare global {
     namespace Cypress {
         interface Chainable {
-            loginPage(): LoginPage,
-            homePage(): Chainable<HomePage>,
-            fillField(): Cypress.Chainable<JQuery<HTMLElement>>,
+            fillField(field: string, text: string): Cypress.Chainable<JQuery<HTMLElement>>,
         }
     }
 } 

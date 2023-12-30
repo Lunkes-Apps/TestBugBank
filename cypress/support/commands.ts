@@ -24,15 +24,9 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import { HomePage } from "./pages/home.page"
-import { LoginPage } from "./pages/login.page"
 
-
-Cypress.Commands.add('loginPage', ()=>{
-    return new LoginPage()
-})
-
-Cypress.Commands.add('homePage', ()=>{
-    return cy.wrap(new HomePage())
+Cypress.Commands.add('fillField', (field: string, text: string) => {
+    return cy.get(field)
+        .type(text, {force: true})
 })
 

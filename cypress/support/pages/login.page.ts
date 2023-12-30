@@ -1,53 +1,57 @@
 import { Account } from "../interfaces/account"
 import { HomePage } from "./home.page"
 
-
 export class LoginPage {
     account: Account = {}
-    
+
     emailLogin: string = '.card__login [name="email"]'
     passwordLogin: string = '.card__login [name="password"]'
     loginButton: string = '.login__buttons [type="submit"]'
-    
+
     registerButton: string = '.login__buttons [type="button"]'
     emailLoginRegister: string = '.card__register [name="email"]'
     nameRegister: string = '.card__register [name="name"]'
     passwordRegister: string = '.card__register [name="password"]'
-    passworConfirmRegister: string = '.card__register [name="passwordConfirmation"]'
+    passwordConfirmRegister: string = '.card__register [name="passwordConfirmation"]'
+    buttonRegister: string = '.card__register [type="submit"]'
 
     toggleBalance: string = '#toggleAddBalance'
 
 
     login = (email: string, password: string): LoginPage => {
-        cy.get(this.emailLogin)
-        .type(email)
-        .get(this.passwordLogin)
-        .type(password)
-        .get(this.loginButton).click()
+        cy.fillField(this.emailLogin, email)
+          .fillField(this.passwordLogin, password)
+          .get(this.loginButton).click()
         return this;
     }
 
-    register(email: string, name: string, 
-             password: string, passwordConfirm: string,
-             withBalance: string): LoginPage{
-        cy.get(this.emailLoginRegister)
-        .type(email)
-        .get(this.nameRegister)
-        .type(name)
-        .get(this.passwordRegister)
-        .type(password)
-        .get(this.passworConfirmRegister)
-        .type(passwordConfirm)
-
-        if()
-
+    clickButtonRegister = (): LoginPage => {
+        cy.get(this.registerButton).click()
+        return this
     }
 
-    isToggleTrue = (): boolean =>{
-        cy.get(this.toggleBalance).parent().then(($element) =>{
-            $element.
-            return true;
+    register = (email: string, name: string,
+        password: string, passwordConfirm: string,
+        withBalance: boolean): LoginPage => {
+        cy.fillField(this.emailLoginRegister, email)
+        .fillField(this.nameRegister, name)
+        .fillField(this.passwordRegister, password)
+        .fillField(this.passwordConfirmRegister, passwordConfirm)
+        
+        if (withBalance) this.clickToggle()
+            .get(this.buttonRegister)
+            .click()
+
+        return this
+    }
+
+    clickToggle = (): Cypress.Chainable<JQuery<HTMLElement>> => {
+        return cy.get(this.toggleBalance).parent().then(($element) => {
+            if ($element.attr("class").match('hsmFIT')[0] === undefined) {
+                cy.get(this.toggleBalance).click()
+            }
         })
     }
 
+    
 }
