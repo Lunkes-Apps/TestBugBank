@@ -15,6 +15,7 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+import { Account } from './interfaces/account'
 import { HomePage } from './pages/home.page'
 import { LoginPage } from './pages/login.page'
 
@@ -30,6 +31,7 @@ declare global {
     namespace Cypress {
         interface Chainable {
             fillField(field: string, text: string): Cypress.Chainable<JQuery<HTMLElement>>,
+            getAccount(emai: string): Cypress.Chainable<Account>
         }
     }
 } 

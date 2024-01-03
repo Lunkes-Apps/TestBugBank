@@ -2,7 +2,6 @@ import { Account } from "../interfaces/account"
 import { HomePage } from "./home.page"
 
 export class LoginPage {
-    account: Account = {}
 
     emailLogin: string = '.card__login [name="email"]'
     passwordLogin: string = '.card__login [name="password"]'
@@ -17,11 +16,13 @@ export class LoginPage {
 
     toggleBalance: string = '#toggleAddBalance'
 
+    modalText: string = '#modalText'
+    buttonConfirmation: string = '#btnCloseModal'
 
     login = (email: string, password: string): LoginPage => {
         cy.fillField(this.emailLogin, email)
-          .fillField(this.passwordLogin, password)
-          .get(this.loginButton).click()
+            .fillField(this.passwordLogin, password)
+            .get(this.loginButton).click()
         return this;
     }
 
@@ -34,24 +35,26 @@ export class LoginPage {
         password: string, passwordConfirm: string,
         withBalance: boolean): LoginPage => {
         cy.fillField(this.emailLoginRegister, email)
-        .fillField(this.nameRegister, name)
-        .fillField(this.passwordRegister, password)
-        .fillField(this.passwordConfirmRegister, passwordConfirm)
-        
+            .fillField(this.nameRegister, name)
+            .fillField(this.passwordRegister, password)
+            .fillField(this.passwordConfirmRegister, passwordConfirm)
+
         if (withBalance) this.clickToggle()
             .get(this.buttonRegister)
-            .click()
-
+            .click({ force: true })
+        
+        cy.get(this.buttonConfirmation)
+            .click({ force: true }).then(() =>{})
         return this
     }
 
     clickToggle = (): Cypress.Chainable<JQuery<HTMLElement>> => {
+
         return cy.get(this.toggleBalance).parent().then(($element) => {
-            if ($element.attr("class").match('hsmFIT')[0] === undefined) {
-                cy.get(this.toggleBalance).click()
+            if ($element.attr('class').match(/hsmFIT/) == null) {
+                cy.get(this.toggleBalance).click({ force: true })
             }
         })
     }
 
-    
 }

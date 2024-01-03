@@ -24,9 +24,20 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import { Account } from "./interfaces/account"
+
 
 Cypress.Commands.add('fillField', (field: string, text: string) => {
     return cy.get(field)
-        .type(text, {force: true})
+        .clear({ force: true })
+        .type(text, { force: true })
+})
+
+Cypress.Commands.add('getAccount', (email: string) => {
+    return cy.getAllLocalStorage().then($var => {
+        var accountNumber = $var['https://bugbank.netlify.app'][email]
+        console.log(accountNumber)
+        return JSON.parse(window.localStorage[email]) as Account
+    }).then($accountNumber=>{})
 })
 
