@@ -1,77 +1,66 @@
 import { DataTable, Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 import { Account } from "../../support/interfaces/account";
 import { TransferPage } from "../../support/pages/transfer.page";
+import { LoginPage } from "../../support/pages/login.page";
+import { HomePage } from "../../support/pages/home.page";
 
 var accounts: Account[] = []
+
+var loginPage: LoginPage = new LoginPage()
+var homePage: HomePage = new HomePage()
 
 Given('We have two accounts with balance', (accountsList: DataTable) => {
 
     accountsList.rows().forEach(account => {
-
-        cy.loginPage().then(($loginPage) => {
-
-            var acc = $loginPage.clickRegister()
-                .fillEmailRegistering(account[1])
-                .fillNameRegistering(account[2])
-                .fillPasswordRegistering(account[3])
-                .fillPasswordConfirmation(account[3])
-                .toggleAddBalance(true)
-                .clickSendRegistration()
-                .confirmSuccessRegistration()
-            accounts.push(acc)
-
-        })
+        loginPage
+            .clickButtonRegister()
+            .register(account[1], account[2], account[3], account[3], true)
     })
 
 })
 
 
 When('Access the account {string} {string}', (account: string, password: string) => {
-    cy.loginPage().then(($loginPage) => {
-
-        $loginPage
-            .fillEmail(account)
-            .fillPassword(password)
-            .clickAccessAccount()
-
-    })
+    loginPage
+        .login(account, password)
 })
 
 When('Transfer money from account A to account B', (valuesList: DataTable) => {
-    var accountNumber = accounts[1].accountNumber.split(/-/)[0]
-    var digit = accounts[1].accountNumber.split(/-/)[1]
 
-    cy.homePage().then($homePage => {
-        let transferPage: TransferPage = $homePage.clickTransfer()
+    var transferPage: TransferPage = homePage.clickTransfer()
 
-        valuesList.rows().forEach(value => {
-            transferPage.fillAccountNumber(accountNumber, digit)
-                .fillValue(value[0])
-                .fillDetails(value[1])
+    valuesList.rows().forEach(row => {
+        
+        cy.getAccount(row[0]).then($account => {
+            var number = $account.accountNumber.split('-')[0]
+            var digit = $account.accountNumber.split('-')[1]
+            transferPage
+                .fillAccountNumber(number, digit)
+                .fillValue(row[1])
+                .fillDetails(row[2])
                 .sendTransation()
+
         })
+
     })
 
 })
 
-Then('The final result should be',(valuesList: DataTable)=>{
+
+Then('The final result should be', (valuesList: DataTable) => {
+    
     var balanceA = valuesList.rows()[0][1]
     var balanceB = valuesList.rows()[1][1]
+
+    var EmailA = valuesList.rows()[0][0]
+    var EmailB = valuesList.rows()[1][0]
         
-    cy.homePage().then($homePage => {
-        //Home page Account A
-        $homePage.goHome()
-            .getBalance().should('contain.text',balanceA)
-        $homePage.logout()
-        //Login Page
-        .fillEmail(accounts[1].email)
-        .fillPassword(accounts[1].password)
-        .clickAccessAccount()
-        //Home Page Account B
-        .getBalance().should('contain.text',balanceB)
+    cy.getAccount(EmailA).then($account => {
+        expect($account.balance.toString()).equal(balanceA)
     })
 
-    
-
-
+    cy.getAccount(EmailB).then($account => {
+        expect($account.balance.toString()).equal(balanceB)
+    })
+   
 })
